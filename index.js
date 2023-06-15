@@ -44,6 +44,7 @@ function simplification(codeGray) {
     let simplify = ""
     let groups = []
     let selects= []
+    console.log(codeGray)
     codeGray.map((item, index) => {
 
         if (item.result == 1) {
