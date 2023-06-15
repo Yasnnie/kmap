@@ -26,8 +26,7 @@ function get_code_gray() {
                 if (row[j - 1]) number_start = row[j - 1]
                 number_stay = row[j] ^ number_start
             }
-            if(i % 2 == 0)number_stay.reverse()
-            row_code_gray.push(number_stay )
+            row_code_gray.push(number_stay)
         }
 
 
@@ -44,44 +43,42 @@ function get_code_gray() {
 function simplification(codeGray) {
     let simplify = ""
     let groups = []
-    console.log(codeGray)
-    codeGray.map((item) => {
+    let selects= []
+    codeGray.map((item, index) => {
 
         if (item.result == 1) {
-            groups = [...groups, ...item.row]
-        } else {
-          
-            for (let i = 0; i < groups.length / 2; i++) {
-                const bit1 = groups[i]
-                const bit2 = groups[i + vars.length]
-                if (bit1 === bit2) simplify += `${vars[i]}${bit1 === 0 ? "`" : ""}`
-            }
-
-            groups = []
+            if (index % 2 == 0) item.row.reverse()
+            groups = [...groups, item.row]
+        }else{
+            if(groups.length >=1) selects.push(groups)
+            groups=[]
         }
-
+    
     })
 
-    // selects.map((item) => {
+    selects.map((item) => {
 
-    //     const array1 = item[0]
-    //     const array2 = item[1]
-    //     const array3 = item[2]
-    //     const array4 = item[4]
+        const array1 = item[0]
+        const array2 = item[1]
+        const array3 = item[2]
+        const array4 = item[4]
 
-    //     console.log(item)
+        console.log(item)
 
-    //         for (let j in array1) {
-    //             const bit1 = array1[j]
+            for (let j in array1) {
+                const bit1 = array1[j]
 
-    //             if (array2) {
-    //                 const bit2 = array2[j]
-    //                 if (bit1 === bit2)
-    //                 simplify +=`${vars[j]}${bit1 === 0 ? "`" : ""}`
-    //             }
-    //         }
-    //         if(selects[selects.length - 1] != item) simplify+="+"
-    // })
+                if (array2) {
+                    const bit2 = array2[j]
+                    if (bit1 === bit2)
+                    simplify +=`${vars[j]}${bit1 === 0 ? "`" : ""}`
+                }else{
+                   
+                    simplify +=`${vars[j]}${bit1 === 0 ? "`" : ""}`
+                }
+            }
+            if(selects[selects.length - 1] != item) simplify+="+"
+    })
 
     console.log(simplify)
 
