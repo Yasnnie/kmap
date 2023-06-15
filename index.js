@@ -41,12 +41,12 @@ function k_map(codeGray) {
   const x2 = ["A`", "A"];
   const x3 = ["A`B`", "A`B", "A B", "AB`"];
 
-  console.log("\n==Mapa de Karnaugh==\n")
+  console.log("\n==Mapa de Karnaugh==\n");
 
   const tamanho = vars.length == 3;
   tamanho ? console.log("____  C`| C |") : console.log("__  B`| B |");
   const escolha = tamanho ? x3 : x2;
-  
+
   let line = escolha[0] + "| ";
   let count = 1;
 
@@ -54,9 +54,9 @@ function k_map(codeGray) {
     line += item.result + " | ";
 
     if (index % 2 != 0) {
-        const start = escolha[count] !=undefined ? escolha[count] + " | " :""
+      const start = escolha[count] != undefined ? escolha[count] + " | " : "";
       line += "\n" + start;
-      count+=1
+      count += 1;
     }
   });
 
@@ -67,11 +67,12 @@ function simplification(codeGray) {
   let simplify = "";
   let groups = [];
   let selects = [];
-
+console.log(codeGray)
   codeGray.map((item, index) => {
     if (item.result == 1) {
-      if (index % 2 == 0) item.row.reverse();
       groups = [...groups, item.row];
+      
+      if (index == codeGray.length -1 && groups.length >= 1) selects.push(groups);
     } else {
       if (groups.length >= 1) selects.push(groups);
       groups = [];
