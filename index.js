@@ -1,9 +1,27 @@
 const prompt = require("prompt-sync")();
 let vars = ["A", "B", "C"];
 
+const soma_array = (array) => array.reduce(function (soma, i) {
+    return soma + i;
+})
+
+function divideArray(array) {
+    let result = [];
+
+    if (array.length == 3) {
+        result.push(array.slice(0, 2));
+        result.push(array.slice(-2));
+    }else if (array.length == 5) {
+        console.log("5")
+    } else {
+        result.push(array)
+    }
+
+    return result;
+}
+
 function get_code_gray() {
     let codeGray = []
-    let truthTable = []
     //Recebe quantas variáveis são
     const numbers_vars = Number(prompt("Qual a quantidade de entradas?"));
     vars = vars.slice(0, numbers_vars);
@@ -37,17 +55,14 @@ function get_code_gray() {
         //Saida da tabela verdade
         const value = Number(prompt(`Valor da linha ${i}:`));
 
-        truthTable.push({ result: value, row: row.join("") });
         codeGray.push({ result: value, row: row_code_gray.join("") });
     }
 
-    return { codeGray, truthTable };
+    return codeGray;
 }
 
 function criarMapaKarnaugh(vetor) {
-    const numVariaveis = Math.log2(vetor.length); 
-    const numLinhas = Math.pow(2, numVariaveis);
-    const numColunas = vetor.length / numLinhas;
+    const numVariaveis = Math.log2(vetor.length);
 
     if (numVariaveis == 2) {
         const mapa = `     
@@ -61,8 +76,8 @@ function criarMapaKarnaugh(vetor) {
   ''    C~  C
   A~B~| ${vetor[0].result} | ${vetor[1].result} | 
   A~B | ${vetor[2].result} | ${vetor[3].result} |
-  A B | ${vetor[6].result} | ${vetor[7].result} |
-  A B~| ${vetor[4].result} | ${vetor[5].result} |
+  A B | ${vetor[4].result} | ${vetor[5].result} |
+  A B~| ${vetor[6].result} | ${vetor[7].result} |
     `;
         return mapa;
     }
@@ -89,9 +104,15 @@ function simplification(codeGray) {
         }
     });
 
+    let new_select = []
     console.log(selects)
-
     selects.map((item) => {
+        const subArrays = divideArray(item)
+        new_select = [...new_select, ...subArrays]
+    })
+
+    console.log(new_select)
+    new_select.map((item) => {
         const pos_1 = []
         const pos_2 = []
         const pos_3 = []
@@ -102,20 +123,10 @@ function simplification(codeGray) {
             if (item[j][2]) pos_3.push(Number(item[j][2]))
         }
 
-        let soma1 = pos_1.reduce(function (soma, i) {
-            return soma + i;
-        });
-
-        let soma2 = pos_2.reduce(function (soma, i) {
-            return soma + i;
-        });
-
+        let soma1 = soma_array(pos_1);
+        let soma2 = soma_array(pos_2)
         let soma3 = undefined
-
-        if (pos_3.length != 0)
-            soma3 = pos_3.reduce(function (soma, i) {
-                return soma + i;
-            });
+        if (pos_3.length != 0) soma3 = soma_array(pos_3)
 
         // PEGA AS COMBINAÇÕES
         if (soma1 == 0) simplify += "A'"
@@ -125,13 +136,14 @@ function simplification(codeGray) {
 
         if (soma3 && soma3 == 0) simplify += "C'"
         if (soma3 && soma3 == pos_3.length) simplify += "C"
-        if (selects[selects.length - 1] != item) simplify += "+";
+
+        if (new_select[new_select.length - 1] != item) simplify += "+";
     });
 
     console.log(simplify);
 }
 
-const { codeGray, truthTable } = get_code_gray();
-console.log(truthTable)
-console.log(criarMapaKarnaugh(truthTable));
+const codeGray = get_code_gray();
+console.log(criarMapaKarnaugh(codeGray));
+
 simplification(codeGray);
