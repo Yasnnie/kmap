@@ -3,7 +3,7 @@ let vars = ["A", "B", "C"];
 
 function get_code_gray() {
     let codeGray = []
-
+    let truthTable = []
     //Recebe quantas variáveis são
     const numbers_vars = Number(prompt("Qual a quantidade de entradas?"));
     vars = vars.slice(0, numbers_vars);
@@ -37,45 +37,35 @@ function get_code_gray() {
         //Saida da tabela verdade
         const value = Number(prompt(`Valor da linha ${i}:`));
 
+        truthTable.push({ result: value, row: row.join("") });
         codeGray.push({ result: value, row: row_code_gray.join("") });
     }
 
-    return codeGray;
+    return { codeGray, truthTable };
 }
 
-function k_map(codeGray) {
-    //Linhas laterais
-    const x2 = ["A`", "A"];
-    const x3 = ["A`B`", "A`B", "A B", "AB`"];
-    const tamanho = vars.length == 3; //Verifica se é 3 variáveis
+function criarMapaKarnaugh(vetor) {
+    const numVariaveis = Math.log2(vetor.length); 
+    const numLinhas = Math.pow(2, numVariaveis);
+    const numColunas = vetor.length / numLinhas;
 
-    console.log(codeGray)
-    console.log("\n==Mapa de Karnaugh==\n");
-
-
-    tamanho ? console.log("____  C`| C |") : console.log("__  B`| B |");
-    const escolha = tamanho ? x3 : x2;
-
-    let line = escolha[0] + "| ";
-    let count = 1;
-    const left_array = codeGray.slice(0, codeGray.length / 2)
-    let right_array = codeGray.slice(codeGray.length / 2, codeGray.length)
-
-    right_array = right_array.reverse()
-
-    const kmap_array = [...left_array, ...right_array]
-
-    kmap_array.map((item, index) => {
-        line += item.result + " | ";
-
-        if (index % 2 != 0) {
-            const start = escolha[count] != undefined ? escolha[count] + " | " : "";
-            line += "\n" + start;
-            count += 1;
-        }
-    });
-
-    console.log(line);
+    if (numVariaveis == 2) {
+        const mapa = `     
+  ''  B~  B
+  A~| ${vetor[0].result} | ${vetor[1].result} | 
+  A | ${vetor[3].result} | ${vetor[2].result} |
+    `;
+        return mapa;
+    } else if (numVariaveis == 3) {
+        const mapa = `     
+  ''    C~  C
+  A~B~| ${vetor[0].result} | ${vetor[1].result} | 
+  A~B | ${vetor[2].result} | ${vetor[3].result} |
+  A B | ${vetor[6].result} | ${vetor[7].result} |
+  A B~| ${vetor[4].result} | ${vetor[5].result} |
+    `;
+        return mapa;
+    }
 }
 
 function simplification(codeGray) {
@@ -86,9 +76,9 @@ function simplification(codeGray) {
     codeGray.map((item, index) => {
         if (item.result == 1) {
 
-            if(index == 0 && codeGray[codeGray.length - 1].result == 1){
-                selects.push([item.row,codeGray[codeGray.length - 1].row])
-            }else{
+            if (index == 0 && codeGray[codeGray.length - 1].result == 1) {
+                selects.push([item.row, codeGray[codeGray.length - 1].row])
+            } else {
                 groups = [...groups, item.row];
             }
 
@@ -132,7 +122,7 @@ function simplification(codeGray) {
         if (soma1 == pos_1.length) simplify += "A"
         if (soma2 == 0) simplify += "B'"
         if (soma2 == pos_2.length) simplify += "B"
-    
+
         if (soma3 && soma3 == 0) simplify += "C'"
         if (soma3 && soma3 == pos_3.length) simplify += "C"
         if (selects[selects.length - 1] != item) simplify += "+";
@@ -141,6 +131,7 @@ function simplification(codeGray) {
     console.log(simplify);
 }
 
-const codeGray = get_code_gray();
-k_map(codeGray);
+const { codeGray, truthTable } = get_code_gray();
+console.log(truthTable)
+console.log(criarMapaKarnaugh(truthTable));
 simplification(codeGray);
