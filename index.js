@@ -107,7 +107,7 @@ function simplification(codeGray) {
     });
 
     let new_select = []
-    console.log(selects)
+    
     selects.map((item) => {
         const subArrays = divideArray(item)
         new_select = [...new_select, ...subArrays]
