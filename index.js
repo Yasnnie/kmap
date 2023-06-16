@@ -85,9 +85,14 @@ function simplification(codeGray) {
 
     codeGray.map((item, index) => {
         if (item.result == 1) {
-            groups = [...groups, item.row];
 
-            if (index == codeGray.length - 1 && groups.length >= 1) selects.push(groups);
+            if(index == 0 && codeGray[codeGray.length - 1].result == 1){
+                selects.push([item.row,codeGray[codeGray.length - 1].row])
+            }else{
+                groups = [...groups, item.row];
+            }
+
+            if (index == codeGray.length - 1 && codeGray[codeGray.length - 1].result != 1 && groups.length >= 1) selects.push(groups);
         } else {
             if (groups.length >= 1) selects.push(groups);
             groups = [];
