@@ -75,13 +75,15 @@ function criarMapaKarnaugh(vetor) {
         const mapa = `     
   ''    C~  C
   A~B~| ${vetor[0].result} | ${vetor[1].result} | 
-  A~B | ${vetor[2].result} | ${vetor[3].result} |
+  A~B | ${vetor[3].result} | ${vetor[2].result} |
   A B | ${vetor[4].result} | ${vetor[5].result} |
-  A B~| ${vetor[6].result} | ${vetor[7].result} |
+  A B~| ${vetor[7].result} | ${vetor[6].result} |
     `;
         return mapa;
     }
 }
+
+
 
 function simplification(codeGray) {
     let simplify = "";
@@ -111,7 +113,7 @@ function simplification(codeGray) {
         new_select = [...new_select, ...subArrays]
     })
 
-    console.log(new_select)
+    
     new_select.map((item) => {
         const pos_1 = []
         const pos_2 = []
@@ -144,6 +146,6 @@ function simplification(codeGray) {
 }
 
 const codeGray = get_code_gray();
+console.log(codeGray)
 console.log(criarMapaKarnaugh(codeGray));
-
 simplification(codeGray);
